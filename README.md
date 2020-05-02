@@ -7,4 +7,4 @@
 
 Interpretable and explainable machine learning and AI.
 
-Currently implements so called SLIM (Supersprase Linear Integer Model) Scoring systems via a heuristic optimization approach. See [examples/bankruptcy_dataset.jl](examples/bankruptcy_dataset.jl) for a simple example of its use.
+Currently implements so called SLIM (Supersparse Linear Integer Model) Scoring systems via a heuristic optimization approach. See [examples/bankruptcy_dataset.jl](examples/bankruptcy_dataset.jl) for a simple example of its use.
