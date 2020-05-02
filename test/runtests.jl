@@ -2,5 +2,6 @@ using InterpretableModels
 using Test
 
 @testset "InterpretableModels.jl" begin
-    # Write your own tests here.
+    include("test_utils.jl")
+    include("test_slim_scoring.jl")
 end
