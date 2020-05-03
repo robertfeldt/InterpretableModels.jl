@@ -1,6 +1,6 @@
 using InterpretableModels: bbo_floor_int_searchrange, nnzeroasint, sign_predict
 using InterpretableModels: sign_accuracy, sign_misclassification_rate, aspct
-using InterpretableModels: as_sign_labels, nonzeroindices
+using InterpretableModels: as_sign_labels, nonzeroindices, uptobutexcluding
 
 @testset "bbo_floor_int_searchrange" begin
     lb, ub = bbo_floor_int_searchrange(5)
@@ -61,4 +61,23 @@ end
     @test nonzeroindices(Float64[]) == Int[]
     @test nonzeroindices(Int[]) == Int[]
     @test nonzeroindices([0]) == Int[]
+
+    @test nonzeroindices([-3, 1.2], false) == Int[1, 2] # Given in same order as stated
+    @test nonzeroindices([-3, 1.2], true) == Int[2, 1]  # 2nd one comes before since it has higher value
+
+    @test nonzeroindices([4, 0, -3, 1.2], false) == Int[1, 3, 4]
+    @test nonzeroindices([4, 0, -3, 1.2], true) == Int[1, 4, 3]
+end
+
+@testset "uptobutexcluding" begin
+    @test uptobutexcluding(5, []) == Int[1, 2, 3, 4, 5]
+    @test uptobutexcluding(4, [1]) == Int[2, 3, 4]
+    @test uptobutexcluding(6, [3, 1]) == Int[2, 4, 5, 6]
+    @test uptobutexcluding(3, [3, 1]) == Int[2]
+
+    @test uptobutexcluding(1, [2]) == Int[1]
+    @test uptobutexcluding(1, [1]) == Int[]
+    @test uptobutexcluding(0, []) == Int[]
+
+    @test uptobutexcluding(3, ["3"]) == Int[1, 2, 3]
 end

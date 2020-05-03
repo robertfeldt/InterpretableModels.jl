@@ -17,11 +17,14 @@ Count number of nonzero elements of a vector when floored to integers.
 nnzeroasint(λ::Vector{N}) where {N<:Number} = sum(floortoints(λ) .!= 0)
 
 """
-    nonzeroindices(λ::Vector{N})
+    nonzeroindices(λ::Vector{N}, sorted = false)
 
-Count number of nonzero elements of a vector when floored to integers.
+Return the indices of the nonzero elements of a vector when they are floored to integers.
 """
-nonzeroindices(λ::Vector{N}) where {N<:Number} = findall(v -> v != 0, λ)
+function nonzeroindices(λ::Vector{N}, sorted = true) where {N<:Number}
+    idxs = findall(v -> v != 0, λ)
+    return sorted ? idxs[sortperm(λ[idxs], rev=true)] : idxs
+end
 
 """
     sign_predict(λ::Vector, X)
@@ -70,4 +73,8 @@ function as_sign_labels(y::AbstractVector)
     uniquevalues = sort(unique(y))
     @assert 1 <= length(uniquevalues) <= 2
     Int[(c==uniquevalues[1] ? 1 : -1) for c in y]
+end
+
+function uptobutexcluding(P::Int, excl::AbstractVector)
+    setdiff(collect(1:P), excl)
 end
