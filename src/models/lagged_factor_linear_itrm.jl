@@ -41,6 +41,8 @@ end
 # lag value is our horizon. If we don't have params we use the
 actualminlag(m::LaggedFactorLITRM) =
     hasparams(m) ? minimum(lags(m)) : minlag(m)
+actualmaxlag(m::LaggedFactorLITRM) =
+        hasparams(m) ? maximum(lags(m)) : maxlag(m)
 
 lag(m::LaggedFactorLITRM, fi::Int, ps::Vector{Float64} = params(m)) =
     floor(Int, ps[fi*3])

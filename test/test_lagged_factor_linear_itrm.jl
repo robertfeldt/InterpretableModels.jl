@@ -1,6 +1,6 @@
 using InterpretableModels: getfactor, parambounds, getintercept, featurename
 using InterpretableModels: setfeaturenames!, modelasstring, setparams!, hasparams
-using InterpretableModels: minlag, actualminlag, maxlag, params, horizon
+using InterpretableModels: minlag, actualminlag, maxlag, actualmaxlag, params, horizon
 using InterpretableModels: predict, predict!, fit!
 using DataFrames
 
@@ -18,11 +18,13 @@ lm = LaggedFactorLITRM(2, 4;
 @test actualminlag(lm) == 3
 @test horizon(lm) == 3
 @test maxlag(lm) == 8
+@test actualmaxlag(lm) == 8
 
 setparams!(lm, [1.0, 2.24, 5.5, 4.1, 1.2, 8.0, 0.5])
 @test hasparams(lm)
 @test minlag(lm) == 3
 @test actualminlag(lm) == 5 # Since 5.5 < 8.0
+@test actualmaxlag(lm) == 8 # Since 8.0 > 5.5
 @test horizon(lm) == 5
 @test params(lm) == [1.0, 2.24, 5.5, 4.1, 1.2, 8.0, 0.5]
 
