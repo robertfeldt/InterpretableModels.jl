@@ -20,14 +20,14 @@ featurename(m::AbstractLinearITRM, fi::Int) =
 
 function StatsBase.predict(m::AbstractLinearITRM, X::AbstractMatrix{N},
     ps::Vector{Float64} = params(m)) where {N<:Number}
-    preds = Array{Float64}(undef, size(X, 1)-maxlag(m))
+    preds = Array{Float64}(undef, size(X, 1)-actualmaxlag(m))
     StatsBase.predict!(m, preds, X, ps)
 end
 
 function StatsBase.predict!(m::AbstractLinearITRM, preds::Vector{Float64},
     X::AbstractMatrix{N}, ps::Vector{Float64} = params(m)) where {N<:Number}
     previ = 0
-    for row in (maxlag(m)+1):size(X, 1)
+    for row in (actualmaxlag(m)+1):size(X, 1)
         preds[(previ += 1)] = predictforrow(m, X, row, ps)
     end
     preds # Note that due to lag this will be shorter than num rows of X
