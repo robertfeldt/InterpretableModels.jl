@@ -23,7 +23,7 @@ end
 function fit!(m::InterpretableModel, o::BlackBoxOptimizer,
                 X::AbstractMatrix{Float64}, y::AbstractVector{Float64}; kws...)
 
-    @assert size(X, 1) == length(y)
+    @assert size(X, 1) >= length(y) - maxlag(m)
 
     fitnessfn(ps::Vector{Float64}) = begin
         yhat, lossvalue = predictandcalcloss(m, X, y, ps, o.lossfn)

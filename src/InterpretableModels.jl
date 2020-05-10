@@ -3,7 +3,7 @@ using CSV, BlackBoxOptim, DataFrames, Statistics, StatsBase
 
 export SLIMScoringSystem, bboptimize_slim_scoring_system,
     isclassificationmodel, isregressionmodel, istimeseriesmodel, horizon
-export LaggedFactorLITRM, predict
+export LaggedFactorLITRM, predict, fit!
 
 # Core and utils
 include("utils.jl")

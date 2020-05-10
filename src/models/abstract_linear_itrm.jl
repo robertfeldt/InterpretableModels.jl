@@ -87,14 +87,11 @@ end
 
 align(yhat, y) = y[(end-length(yhat)+1):end]
 
-defaultoptimizer(m::AbstractLinearITRM) =
-    InterpretableModels.DefaultOptimizer(m)
-
 function predictandcalcloss(m::AbstractLinearITRM, X::AbstractMatrix{Float64},
             y::AbstractVector{Float64}, ps::Vector{Float64}, lossfn::Function)
     yhat = predict(m, X, ps)
     return yhat, lossfn(yhat, align(yhat, y))
 end
 
-fit!(m::AbstractLinearITRM, X::AbstractMatrix{Float64}, y::AbstractVector{Float64}) =
-    fit!(m, defaultoptimizer(m), X, y)
+fit!(m::AbstractLinearITRM, X::AbstractMatrix{Float64}, y::AbstractVector{Float64}; kws...) =
+    fit!(m, InterpretableModels.DefaultOptimizer(m), X, y; kws...)
