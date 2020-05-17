@@ -9,12 +9,15 @@ Interpretable and explainable machine learning (ML) and AI in Julia. Much curren
 
 Currently this package implements the modeling approaches:
 - SLIM (Supersparse Linear Integer Model) Scoring systems for classification, and
-- a LaggedFactor model for time series regression.
+- a LaggedFactor model for time series regression, and
+- a MovingAverage model for time series regression.
 
-Both are currently optimized via a heuristic, black-box optimization approach.
+All models are currently optimized via heuristic, black-box optimization.
 
 ## Usage
 
 For SLIM, see [examples/bankruptcy_dataset.jl](examples/bankruptcy_dataset.jl) for a simple example of its use.
 
 For LaggedFactor LITRM, see [examples/lagged_factor_timeseries_model.jl](examples/lagged_factor_timeseries_model.jl) for a simple example.
+
+For MovingAverage LITRM, see [examples/moving_average_timeseries_model.jl](examples/moving_average_timeseries_model.jl) for a simple example.
