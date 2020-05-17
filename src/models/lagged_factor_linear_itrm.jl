@@ -37,12 +37,11 @@ function isvalidparams(m::LaggedFactorLITRM, ps::Vector{Float64})
     (minlag(m) <= minl) && (maxl <= maxlag(m))
 end
 
-# If we have params the smallest (since they are positive in the params vector)
-# lag value is our horizon. If we don't have params we use the
-actualminlag(m::LaggedFactorLITRM) =
-    hasparams(m) ? minimum(lags(m)) : minlag(m)
-actualmaxlag(m::LaggedFactorLITRM) =
-        hasparams(m) ? maximum(lags(m)) : maxlag(m)
+actualminlag(m::LaggedFactorLITRM, ps::Vector{Float64} = params(m)) =
+    minimum(lags(m, ps))
+
+actualmaxlag(m::LaggedFactorLITRM, ps::Vector{Float64} = params(m)) =
+    maximum(lags(m, ps))
 
 lag(m::LaggedFactorLITRM, fi::Int, ps::Vector{Float64} = params(m)) =
     floor(Int, ps[fi*3])

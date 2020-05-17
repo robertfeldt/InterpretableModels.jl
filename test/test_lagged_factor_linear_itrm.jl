@@ -85,35 +85,39 @@ end
 
     X = Array{Float64}(df)
 
-    # Since we have a lag range from 1-3 we can only get two predictions
-    # from this model, i.e. for rows 4 and 5.
+    # Since we have a lag range of 1-2 we can only get three predictions
+    # from this model, i.e. for rows 3-5.
     # True expression: y = 1.34 .+ X[T-1, 1] .* (-2.5) .+ X[T-2, 3] .* 4.0
-    y = [Inf, Inf, Inf,
+    trueparams = [-2.5, 1.0, 1.0, 4.0, 3.0, 2.0, 1.34]
+    y = [Inf, Inf,
+            1.34 + (-2.5)*X[3-1, 1] + 4.0*X[3-2, 3],
             1.34 + (-2.5)*X[4-1, 1] + 4.0*X[4-2, 3],
             1.34 + (-2.5)*X[5-1, 1] + 4.0*X[5-2, 3]]
-    trueparams = [-2.5, 1.0, 1.0, 4.0, 3.0, 2.0, 1.34]
     yhat = predict(lm, X, trueparams)
-    @test length(yhat) == 2
-    @test yhat[1] == y[4]
-    @test yhat[2] == y[5]
+    @test length(yhat) == 3
+    @test yhat[1] == y[3]
+    @test yhat[2] == y[4]
+    @test yhat[3] == y[5]
 
-    yhatpreds = zeros(Float64, 2)
+    yhatpreds = zeros(Float64, 3)
     predict!(lm, yhatpreds, X, trueparams)
-    @test yhatpreds[1] == y[4]
-    @test yhatpreds[2] == y[5]
+    @test yhatpreds[1] == y[3]
+    @test yhatpreds[2] == y[4]
+    @test yhatpreds[3] == y[5]
 
     # If we don't have the true params we can fit the model to data to recover them.
     dummyparams = [3.5, 1.5, 1.5, 2.1, 2.0, 1.7, 1.34]
     setparams!(lm, dummyparams) # Set a random param vector to ensure a better one is set after fitting
-    fit!(lm, X, y)
+    fit!(lm, X, y; MaxTime = 3.0)
     @test length(params(lm)) == (1+2*3)
     @test params(lm) != dummyparams
 
     # Since the problem is underconstrained we cannot expect to find the "true"
     # params since there are many that works...
     yhat = predict(lm, X)
-    @test isapprox(yhat[1], y[4], atol=1e-2)
-    @test isapprox(yhat[2], y[5], atol=1e-2)
+    for i in 1:length(yhat)
+        @test isapprox(yhat[i], y[end-(length(yhat)-i)], atol=1e-1)
+    end
 end
 
 end # @testset "LaggedFactorLM" begin

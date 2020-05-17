@@ -3,12 +3,11 @@ using CSV, BlackBoxOptim, DataFrames, Statistics, StatsBase
 
 export SLIMScoringSystem, bboptimize_slim_scoring_system,
     isclassificationmodel, isregressionmodel, istimeseriesmodel, horizon
-export LaggedFactorLITRM, predict, fit!
+export LaggedFactorLITRM, MovingAverageLITRM, predict, fit!
 
 # Core and utils
 include("utils.jl")
 include("loss_functions.jl")
-#include("binarize_features.jl")
 include(joinpath("models", "types.jl"))
 include(joinpath("optimizers", "types.jl"))
 
@@ -24,6 +23,7 @@ DefaultOptimizer(m) = BlackBoxOptimizer(m)
 include(joinpath("models", "slim_scoring.jl"))
 include(joinpath("models", "abstract_linear_itrm.jl"))
 include(joinpath("models", "lagged_factor_linear_itrm.jl"))
+include(joinpath("models", "moving_average_linear_itrm.jl"))
 
 # Optimizers
 

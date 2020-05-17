@@ -6,7 +6,9 @@ ndigits(m::AbstractLinearITRM) = m.ndigits
 nfactors(m::AbstractLinearITRM) = m.nfactors
 nfeatures(m::AbstractLinearITRM) = m.nfeatures
 maxlag(m::AbstractLinearITRM) = m.maxlag
+actualmaxlag(m::AbstractLinearITRM, ps::Nothing) = m.maxlag
 minlag(m::AbstractLinearITRM) = m.minlag
+actualminlag(m::AbstractLinearITRM, ps::Nothing) = m.minlag
 mincoef(m::AbstractLinearITRM) = m.mincoef
 maxcoef(m::AbstractLinearITRM) = m.maxcoef
 r(m::AbstractLinearITRM, v::Float64) = round(v, digits = ndigits(m))
@@ -20,14 +22,14 @@ featurename(m::AbstractLinearITRM, fi::Int) =
 
 function StatsBase.predict(m::AbstractLinearITRM, X::AbstractMatrix{N},
     ps::Vector{Float64} = params(m)) where {N<:Number}
-    preds = Array{Float64}(undef, size(X, 1)-actualmaxlag(m))
+    preds = Array{Float64}(undef, size(X, 1)-actualmaxlag(m, ps))
     StatsBase.predict!(m, preds, X, ps)
 end
 
 function StatsBase.predict!(m::AbstractLinearITRM, preds::Vector{Float64},
     X::AbstractMatrix{N}, ps::Vector{Float64} = params(m)) where {N<:Number}
     previ = 0
-    for row in (actualmaxlag(m)+1):size(X, 1)
+    for row in (actualmaxlag(m, ps)+1):size(X, 1)
         preds[(previ += 1)] = predictforrow(m, X, row, ps)
     end
     preds # Note that due to lag this will be shorter than num rows of X
@@ -62,9 +64,12 @@ function writedescription(io::IO, m::AbstractLinearITRM)
         write(io, "  with negative coefficients only")
     end
     write(io, " (allowed range: [$(mincoef(m)), $(maxcoef(m))])\n")
-    write(io, "  num factors  = $(nfactors(m))\n")
-    write(io, "  num features = $(nfeatures(m))\n")
-    write(io, "  lag range    = $(minlag(m))-$(maxlag(m))\n")
+    write(io, "  num factors:  $(nfactors(m))\n")
+    write(io, "  num features: $(nfeatures(m))\n")
+    aminl, amaxl = actualminlag(m), actualmaxlag(m)
+    ar = (aminl == amaxl) ? string(aminl) : "$(aminl)-$(amaxl)"
+    ars = hasparams(m) ? ", $(ar) (actual)" : ""
+    write(io, "  lags:         $(minlag(m))-$(maxlag(m)) (valid range)$(ars)\n")
 end
 
 modelasstring(m::AbstractLinearITRM, df::DataFrame, ps::Vector{Float64} = m.params) =
@@ -80,7 +85,7 @@ function modelasstring(m::AbstractLinearITRM, params::Vector{Float64} = m.params
 end
 
 function calcfitness(m::AbstractLinearITRM, X::AbstractMatrix{N}, y::AbstractVector{N},
-    ps::Vector{Float64} = m.params, lossfn::Function = l2loss) where {N<:Number}
+    ps::Vector{Float64} = params(m), lossfn::Function = l2loss) where {N<:Number}
     yhat = predict(m, X, ps)
     lossfn(yhat, align(yhat, y))
 end
