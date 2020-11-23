@@ -1,9 +1,13 @@
 module InterpretableModels
 using CSV, BlackBoxOptim, DataFrames, Statistics, StatsBase
+using Lasso, MLDataUtils, ROC
 
 export SLIMScoringSystem, bboptimize_slim_scoring_system,
     isclassificationmodel, isregressionmodel, istimeseriesmodel, horizon
+
 export LaggedFactorLITRM, MovingAverageLITRM, predict, fit!
+
+export LassoLIMOptimizer, LIMScoringSystem
 
 # Core and utils
 include("utils.jl")
@@ -24,6 +28,7 @@ include(joinpath("models", "slim_scoring.jl"))
 include(joinpath("models", "abstract_linear_itrm.jl"))
 include(joinpath("models", "lagged_factor_linear_itrm.jl"))
 include(joinpath("models", "moving_average_linear_itrm.jl"))
+include(joinpath("models", "lasso_simple_scoring.jl"))
 
 # Optimizers
 

@@ -68,13 +68,15 @@ function column_name_and_index(df::DataFrame, idx::Int)
     @assert 1 <= idx <= size(df, 2)
     return names(df)[idx], idx
 end
-function column_name_and_index(df::DataFrame, colname::Symbol)
+
+column_name_and_index(df::DataFrame, colname::Symbol) =
+    column_name_and_index(df, string(colname))
+
+function column_name_and_index(df::DataFrame, colname::AbstractString)
     ns = names(df)
     @assert in(colname, ns)
     colname, findfirst(n -> n == colname, ns)
 end
-column_name_and_index(df::DataFrame, colname::AbstractString) =
-    column_name_and_index(df, Symbol(string(colname)))
 
 function bboptimize_slim_scoring_system(X::AbstractMatrix{N1}, y::AbstractVector{N2},
     C0::Real;

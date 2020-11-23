@@ -29,19 +29,19 @@ end
 
 @testset "column_name_and_index" begin
     df = DataFrame(Cl = Int[1,2], F1 = Float64[1.3, 4.5], F2 = Int[1, 3])
-    @test column_name_and_index(df, 1) == (:Cl, 1)
-    @test column_name_and_index(df, 2) == (:F1, 2)
-    @test column_name_and_index(df, 3) == (:F2, 3)
+    @test column_name_and_index(df, 1) == ("Cl", 1)
+    @test column_name_and_index(df, 2) == ("F1", 2)
+    @test column_name_and_index(df, 3) == ("F2", 3)
 
-    @test column_name_and_index(df, :Cl) == (:Cl, 1)
-    @test column_name_and_index(df, :F2) == (:F2, 3)
+    @test column_name_and_index(df, :Cl) == ("Cl", 1)
+    @test column_name_and_index(df, :F2) == ("F2", 3)
     @test_throws AssertionError column_name_and_index(df, :MyClass)
 
-    @test column_name_and_index(df, "Cl") == (:Cl, 1)
-    @test column_name_and_index(df, "F2") == (:F2, 3)
+    @test column_name_and_index(df, "Cl") == ("Cl", 1)
+    @test column_name_and_index(df, "F2") == ("F2", 3)
     @test_throws AssertionError column_name_and_index(df, "MyF1")
 
-    @test column_name_and_index(df, "Class"[1:2]) == (:Cl, 1)
+    @test column_name_and_index(df, "Class"[1:2]) == ("Cl", 1)
     @test_throws AssertionError column_name_and_index(df, "Class"[1:3])
 end
 
